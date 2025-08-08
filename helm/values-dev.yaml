@@ -1,0 +1,44 @@
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT CONFIGURATION
+# =============================================================================
+# Usage: helm install full-stack-app ./k8s-helm -f values-dev.yaml
+# 
+# This configuration optimizes for:
+# - Lower resource usage (suitable for local development)
+# - Faster startup times
+# - Minimal storage requirements
+
+# =============================================================================
+# REDUCED RESOURCES FOR DEVELOPMENT
+# =============================================================================
+resources:
+  backend:
+    requests:
+      memory: "64Mi"   # Half of production
+      cpu: "50m"       # Minimal CPU
+    limits:
+      memory: "256Mi"  # Reasonable limit for dev
+      cpu: "250m"      # Quarter core max
+  
+  frontend:
+    requests:
+      memory: "16Mi"   # Very lightweight
+      cpu: "10m"       # Minimal CPU
+    limits:
+      memory: "32Mi"   # Small limit
+      cpu: "50m"       # Sufficient for dev
+  
+  mongodb:
+    requests:
+      memory: "128Mi"  # Half of production
+      cpu: "100m"      # Reduced CPU
+    limits:
+      memory: "512Mi"  # Reasonable for dev data
+      cpu: "500m"      # Half core max
+
+# =============================================================================
+# DEVELOPMENT STORAGE
+# =============================================================================
+mongodb:
+  storage:
+    size: 1Gi  # Smaller storage for development data

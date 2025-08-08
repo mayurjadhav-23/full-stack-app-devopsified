@@ -1,0 +1,55 @@
+# =============================================================================
+# PRODUCTION ENVIRONMENT CONFIGURATION
+# =============================================================================
+# Usage: helm install full-stack-app ./k8s-helm -f values-prod.yaml
+#
+# This configuration optimizes for:
+# - High availability with multiple replicas
+# - Enhanced performance with higher resource limits
+# - Larger storage capacity for production data
+
+# =============================================================================
+# HIGH AVAILABILITY REPLICAS
+# =============================================================================
+replicas:
+  backend: 3   # Multiple API servers for load distribution
+  frontend: 2  # Multiple web servers for availability
+  mongodb: 1   # Keep at 1 (MongoDB clustering requires special setup)
+
+# =============================================================================
+# ENHANCED RESOURCES FOR PRODUCTION
+# =============================================================================
+resources:
+  # Backend gets more resources in production
+  backend:
+    requests:
+      memory: "256Mi"  # Double the default
+      cpu: "200m"      # More guaranteed CPU
+    limits:
+      memory: "1Gi"    # Higher memory limit
+      cpu: "1000m"     # Full core available
+  
+  # Frontend can handle more traffic
+  frontend:
+    requests:
+      memory: "64Mi"   # More memory for caching
+      cpu: "50m"       # More CPU for concurrent requests
+    limits:
+      memory: "128Mi"  # Higher limit
+      cpu: "200m"      # More processing power
+  
+  # Database gets significant resources
+  mongodb:
+    requests:
+      memory: "512Mi"  # Double the default
+      cpu: "500m"      # Half core guaranteed
+    limits:
+      memory: "2Gi"    # Large memory for caching
+      cpu: "2000m"     # Two full cores available
+
+# =============================================================================
+# PRODUCTION STORAGE
+# =============================================================================
+mongodb:
+  storage:
+    size: 20Gi  # Large storage for production data

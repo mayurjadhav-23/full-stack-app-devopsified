@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+# README backup files (keep locally, don't push to GitHub)
+README-BACKUP.md
+README-ORIGINAL.md

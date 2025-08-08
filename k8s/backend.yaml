@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: full-stack-app
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: full-stack-backend
+        image: mayurj023/full-backend:latest
+        ports:
+        - containerPort: 5001
+        
+        # Resource limits for backend 
+        resources:
+          requests:
+            memory: "128Mi"   
+            cpu: "100m"       
+          limits:
+            memory: "512Mi"   
+            cpu: "500m"       
+
+        # Kubernetes Health Checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        env:
+        - name: NODE_ENV
+          value: production
+
+        - name: MONGODB_URI
+          value: "mongodb://mongodbadmin:secret@mongodb:27017/dbname?authSource=admin"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef: 
+              name: secrets
+              key: jwt 
+        - name: PORT
+          value: "5001"

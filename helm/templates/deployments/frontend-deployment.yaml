@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: full-stack-app
+  labels:
+    app: frontend
+    component: web
+    tier: frontend
+spec:
+  replicas: {{ .Values.replicas.frontend }}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        component: web
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.images.frontend.repository }}:{{ .Values.images.frontend.tag }}
+        ports:
+        - containerPort: 80
+        
+        resources:
+          {{- toYaml .Values.resources.frontend | nindent 10 }}
+
+        env:
+        - name: NODE_ENV
+          value: {{ .Values.env.nodeEnv }}

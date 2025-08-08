@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb
-  namespace: chat-app
+  name: mongodb-deployment
+  namespace: full-stack-app
+  labels:
+    app: mongodb
 spec:
   replicas: 1
   selector:
@@ -14,19 +16,32 @@ spec:
         app: mongodb
     spec:
       containers:
-      - name: mongodb
-        image: iemafzal/mongodb:v1
+      - name: full-stack-app-mongodb
+        image: mongo
         ports:
         - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: root
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          value: admin
+        
+        # Resource limits for MongoDB database
+        resources:
+          requests:
+            memory: "256Mi"  
+            cpu: "200m"       
+          limits:
+            memory: "1Gi"     
+            cpu: "1000m"      
+        
+        # Mount persistent volume for data persistence
         volumeMounts:
         - name: mongo-data
-          mountPath: /data/db
-      volumes:
-      - name: mongo-data
-        persistentVolumeClaim:
-          claimName: mongo-pvc
+          mountPath: /data/db   # MongoDB's default data directory
+
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: mongodbadmin
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: secret
+
+      volumes: 
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
