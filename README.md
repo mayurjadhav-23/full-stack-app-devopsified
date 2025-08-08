@@ -176,7 +176,7 @@ graph TB
 
 ```bash
 # 📥 Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/mayurjadhav-23/full-stack-app-devopsified.git
 cd full-stack-app
 
 # 🚀 Deploy with Helm (Development)
